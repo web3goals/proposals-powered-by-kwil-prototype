@@ -1,3 +1,3 @@
-import startMathExtension from "./math";
+import startProposalsExtension from "./extensions/proposals";
 
-startMathExtension();
+startProposalsExtension();
