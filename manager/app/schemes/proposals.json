@@ -1,0 +1,116 @@
+{
+  "owner": "",
+  "name": "proposals_2",
+  "tables": [
+    {
+      "name": "proposals",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "primary_key"
+            },
+            {
+              "type": "not_null"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "votes",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "primary_key"
+            },
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "proposal_id",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "voter",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "create_time",
+          "type": "int",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "votes_for",
+          "type": "int",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "votes_against",
+          "type": "int",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "vote_for",
+      "public": true,
+      "inputs": ["$id", "$proposal_id", "$create_time", "$token_address"],
+      "statements": [
+        "$available_votes=proposals.getavailableVotes($token_address,@caller,@dataset,$proposal_id);",
+        "SELECT CASE WHEN $available_votes = '0' THEN ERROR('Caller does not have available votes') END;",
+        "INSERT INTO votes VALUES($id,$proposal_id,@caller,$create_time,$available_votes,0);"
+      ]
+    },
+    {
+      "name": "vote_against",
+      "public": true,
+      "inputs": ["$id", "$proposal_id", "$create_time", "$token_address"],
+      "statements": [
+        "$available_votes=proposals.getavailableVotes($token_address,@caller,@dataset,$proposal_id);",
+        "SELECT CASE WHEN $available_votes = '0' THEN ERROR('Caller does not have available votes') END;",
+        "INSERT INTO votes VALUES($id,$proposal_id,@caller,$create_time,0,$available_votes);"
+      ]
+    }
+  ],
+  "extensions": [
+    {
+      "name": "proposals",
+      "config": {
+        "chain": "\"polygon\""
+      },
+      "alias": "proposals"
+    }
+  ]
+}

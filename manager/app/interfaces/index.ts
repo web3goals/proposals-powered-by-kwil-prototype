@@ -3,17 +3,18 @@ export interface SchemaObj {
   name: string;
   tables: object[];
   actions: object[];
-  extensions: Extensions[];
+  extensions: Extension[];
 }
 
-export interface Extensions {
+export interface Extension {
   name: string;
-  config: MathConfig;
+  config: ExtensionConfig;
   alias: string;
 }
 
-export interface MathConfig {
-  round: string;
+export interface ExtensionConfig {
+  round?: string;
+  chain?: string;
 }
 
 export interface RecordTable {

@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { NodeKwil, Types, Utils } from "kwil";
 import { RecordTable, SchemaObj } from "./interfaces";
-import mathSchema from "./schemes/math.json";
+import proposalsSchema from "./schemes/proposals.json";
 
 dotenv.config();
 
@@ -13,64 +13,47 @@ const kwil = new NodeKwil({
 });
 
 const provider = new JsonRpcProvider(process.env.RPC_PROVIDER);
-const wallet = new Wallet(process.env.PRIVATE_KEY as string, provider);
+const walletOne = new Wallet(process.env.PRIVATE_KEY_1 as string, provider);
+const walletTwo = new Wallet(process.env.PRIVATE_KEY_2 as string, provider);
+const tokenAddress = "0x60f028c82f9f3bf71e0c13fe9e8e7f916b345c00";
 
-async function deployDb() {
-  console.log("deployDb()");
-  let schema: SchemaObj = mathSchema;
-  schema.owner = wallet.address;
+async function createDatabase() {
+  console.log("🚩 createDatabase()");
+  let schema: SchemaObj = proposalsSchema;
+  schema.owner = walletOne.address;
   const dbTx: Types.Transaction = await kwil
     .dbBuilder()
-    .signer(wallet)
+    .signer(walletOne)
     .payload(schema)
     .buildTx();
   const res = await kwil.broadcast(dbTx);
   console.log("res", res);
 }
 
-async function readDb() {
-  console.log("readDb()");
-  const dbid = kwil.getDBID(wallet.address, mathSchema.name);
-  const schema = await kwil.getSchema(dbid);
-  if (!schema.data) {
-    throw new Error("Data is undefined");
-  }
-  // List the tables in the schema
-  console.log("Tables:");
-  for (const table of schema.data?.tables) {
-    console.log(table.name);
-  }
-  // List the available actions
-  console.log("Actions:");
-  for (const action of schema.data.actions) {
-    if (action.public) {
-      console.log(action.name);
-    }
-  }
-}
-
-async function insertWithAddOperation() {
-  console.log("insertWithAddOperation()");
+async function vote() {
+  console.log("🚩 vote()");
+  const createTime = new Date().getTime();
   const input = new Utils.ActionInput()
-    .put("$id", "1")
-    .put("$v1", "3")
-    .put("$v2", "4");
+    .put("$id", `${tokenAddress}_${walletOne.address}_${createTime}`)
+    .put("$proposal_id", "1")
+    .put("$create_time", createTime)
+    .put("$token_address", tokenAddress);
   const tx: Types.Transaction = await kwil
     .actionBuilder()
-    .name("addop")
-    .dbid(kwil.getDBID(wallet.address, mathSchema.name))
-    .signer(wallet)
+    .name("vote_for")
+    .dbid(kwil.getDBID(walletOne.address, proposalsSchema.name))
+    .signer(walletOne)
     .concat(input)
     .buildTx();
   const res = await kwil.broadcast(tx);
   console.log("res", res);
 }
 
-async function getValues() {
-  console.log("getValues()");
+async function getVotes() {
+  console.log("🚩 getVotes()");
   const res = await kwil.selectQuery(
-    kwil.getDBID(wallet.address, mathSchema.name),
-    "SELECT * FROM records"
+    kwil.getDBID(walletOne.address, proposalsSchema.name),
+    "SELECT * FROM votes"
   );
   const results = res.data;
   if (!results) {
@@ -80,12 +63,18 @@ async function getValues() {
   console.log(record);
 }
 
+async function sandbox() {
+  console.log("🚩 sandbox()");
+}
+
 async function main() {
-  console.log("main()");
-  // await deployDb();
-  // await readDb();
-  // await insertWithAddOperation();
-  await getValues();
+  console.log("🚩 main()");
+  // await createDatabase();
+  // await vote();
+  // await getVotes();
+  // await vote();
+  // await getVotes();
+  // await sandbox();
 }
 
 main().catch((error) => {
