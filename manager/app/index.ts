@@ -1,7 +1,8 @@
 import * as dotenv from "dotenv";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { NodeKwil, Types, Utils } from "kwil";
-import { RecordTable, SchemaObj } from "./interfaces";
+import { v4 as uuidv4 } from "uuid";
+import { SchemaObj } from "./interfaces";
 import proposalsSchema from "./schemes/proposals.json";
 
 dotenv.config();
@@ -30,12 +31,40 @@ async function createDatabase() {
   console.log("res", res);
 }
 
+async function postProposal() {
+  console.log("🚩 postProposal()");
+  const createTime = new Date().getTime();
+  const input = new Utils.ActionInput()
+    .put("$id", uuidv4())
+    .put("$token_address", tokenAddress)
+    .put("$create_time", createTime)
+    .put("$description", "Let's build a teleport!");
+  const tx: Types.Transaction = await kwil
+    .actionBuilder()
+    .name("post_proposal")
+    .dbid(kwil.getDBID(walletOne.address, proposalsSchema.name))
+    .signer(walletOne)
+    .concat(input)
+    .buildTx();
+  const res = await kwil.broadcast(tx);
+  console.log("res", res);
+}
+
+async function getProposals() {
+  console.log("🚩 getProposals()");
+  const res = await kwil.selectQuery(
+    kwil.getDBID(walletOne.address, proposalsSchema.name),
+    "SELECT * FROM proposals"
+  );
+  console.log("res.data", res.data);
+}
+
 async function vote() {
   console.log("🚩 vote()");
   const createTime = new Date().getTime();
   const input = new Utils.ActionInput()
-    .put("$id", `${tokenAddress}_${walletOne.address}_${createTime}`)
-    .put("$proposal_id", "1")
+    .put("$id", uuidv4())
+    .put("$proposal_id", "00000000-0000-0000-0000-000000000000")
     .put("$create_time", createTime)
     .put("$token_address", tokenAddress);
   const tx: Types.Transaction = await kwil
@@ -55,12 +84,7 @@ async function getVotes() {
     kwil.getDBID(walletOne.address, proposalsSchema.name),
     "SELECT * FROM votes"
   );
-  const results = res.data;
-  if (!results) {
-    throw new Error("No results returned");
-  }
-  const record: RecordTable[] = results as RecordTable[];
-  console.log(record);
+  console.log("res.data", res.data);
 }
 
 async function sandbox() {
@@ -70,6 +94,8 @@ async function sandbox() {
 async function main() {
   console.log("🚩 main()");
   // await createDatabase();
+  // await postProposal();
+  // await getProposals();
   // await vote();
   // await getVotes();
   // await vote();

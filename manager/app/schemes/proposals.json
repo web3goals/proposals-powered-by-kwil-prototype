@@ -16,6 +16,42 @@
               "type": "not_null"
             }
           ]
+        },
+        {
+          "name": "token_address",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "proposer",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "create_time",
+          "type": "int",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
         }
       ]
     },
@@ -84,11 +120,21 @@
   ],
   "actions": [
     {
+      "name": "post_proposal",
+      "public": true,
+      "inputs": ["$id", "$token_address", "$create_time", "$description"],
+      "statements": [
+        "$is_proposer=proposals.isProposer($token_address,@caller);",
+        "SELECT CASE WHEN $is_proposer = 'false' THEN ERROR('Caller can not post proposals') END;",
+        "INSERT INTO proposals VALUES($id,$token_address,@caller,$create_time,$description);"
+      ]
+    },
+    {
       "name": "vote_for",
       "public": true,
       "inputs": ["$id", "$proposal_id", "$create_time", "$token_address"],
       "statements": [
-        "$available_votes=proposals.getavailableVotes($token_address,@caller,@dataset,$proposal_id);",
+        "$available_votes=proposals.getAvailableVotes($token_address,@caller,@dataset,$proposal_id);",
         "SELECT CASE WHEN $available_votes = '0' THEN ERROR('Caller does not have available votes') END;",
         "INSERT INTO votes VALUES($id,$proposal_id,@caller,$create_time,$available_votes,0);"
       ]
@@ -98,7 +144,7 @@
       "public": true,
       "inputs": ["$id", "$proposal_id", "$create_time", "$token_address"],
       "statements": [
-        "$available_votes=proposals.getavailableVotes($token_address,@caller,@dataset,$proposal_id);",
+        "$available_votes=proposals.getAvailableVotes($token_address,@caller,@dataset,$proposal_id);",
         "SELECT CASE WHEN $available_votes = '0' THEN ERROR('Caller does not have available votes') END;",
         "INSERT INTO votes VALUES($id,$proposal_id,@caller,$create_time,0,$available_votes);"
       ]
