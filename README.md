@@ -1,1 +1,3 @@
-# 💡 Proposals powered by Kwil
+# ⚡ Proposals powered by Kwil
+
+...
