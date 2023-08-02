@@ -20,8 +20,18 @@ const initialize: InitializeFn = async (
   return metadata;
 };
 
+const isProposer: MethodFn = async ({ metadata, inputs }) => {
+  const tokenAddress = inputs[0].toString();
+  const voterAddress = inputs[1].toString();
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER);
+  const token = new Contract(tokenAddress, erc721Abi, provider);
+  const balance = await token["balanceOf(address)"](voterAddress);
+  return balance > 0 ? "true" : "false";
+};
+
 // TODO: Delete logging
 const getAvailableVotes: MethodFn = async ({ metadata, inputs }) => {
+  // Define variables
   const tokenAddress = inputs[0].toString();
   const voterAddress = inputs[1].toString();
   const dbId = inputs[2].toString();
@@ -65,6 +75,7 @@ function startProposalsExtension(): void {
     .named("proposals")
     .withInitializer(initialize)
     .withMethods({
+      isProposer,
       getAvailableVotes,
     })
     .withLoggerFn(logger)
