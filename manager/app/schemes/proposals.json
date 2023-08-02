@@ -1,6 +1,6 @@
 {
   "owner": "",
-  "name": "proposals_2",
+  "name": "proposals_3",
   "tables": [
     {
       "name": "proposals",
@@ -116,6 +116,59 @@
           ]
         }
       ]
+    },
+    {
+      "name": "comments",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "primary_key"
+            },
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "proposal_id",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "commentator",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "create_time",
+          "type": "int",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        },
+        {
+          "name": "comment_text",
+          "type": "text",
+          "attributes": [
+            {
+              "type": "not_null"
+            }
+          ]
+        }
+      ]
     }
   ],
   "actions": [
@@ -147,6 +200,22 @@
         "$available_votes=proposals.getAvailableVotes($token_address,@caller,@dataset,$proposal_id);",
         "SELECT CASE WHEN $available_votes = '0' THEN ERROR('Caller does not have available votes') END;",
         "INSERT INTO votes VALUES($id,$proposal_id,@caller,$create_time,0,$available_votes);"
+      ]
+    },
+    {
+      "name": "post_comment",
+      "public": true,
+      "inputs": [
+        "$id",
+        "$proposal_id",
+        "$create_time",
+        "$comment_text",
+        "$token_address"
+      ],
+      "statements": [
+        "$is_proposer=proposals.isProposer($token_address,@caller);",
+        "SELECT CASE WHEN $is_proposer = 'false' THEN ERROR('Caller can not post comments') END;",
+        "INSERT INTO comments VALUES($id,$proposal_id,@caller,$create_time,$comment_text);"
       ]
     }
   ],

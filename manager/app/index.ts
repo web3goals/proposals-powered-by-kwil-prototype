@@ -87,19 +87,50 @@ async function getVotes() {
   console.log("res.data", res.data);
 }
 
+async function postComment() {
+  console.log("🚩 postComment()");
+  const createTime = new Date().getTime();
+  const input = new Utils.ActionInput()
+    .put("$id", uuidv4())
+    .put("$proposal_id", "00000000-0000-0000-0000-000000000000")
+    .put("$create_time", createTime)
+    .put("$comment_text", "That's a great idea!")
+    .put("$token_address", tokenAddress);
+  const tx: Types.Transaction = await kwil
+    .actionBuilder()
+    .name("post_comment")
+    .dbid(kwil.getDBID(walletOne.address, proposalsSchema.name))
+    .signer(walletOne)
+    .concat(input)
+    .buildTx();
+  const res = await kwil.broadcast(tx);
+  console.log("res", res);
+}
+
+async function getComments() {
+  console.log("🚩 getComments()");
+  const res = await kwil.selectQuery(
+    kwil.getDBID(walletOne.address, proposalsSchema.name),
+    "SELECT * FROM comments"
+  );
+  console.log("res.data", res.data);
+}
+
 async function sandbox() {
   console.log("🚩 sandbox()");
 }
 
 async function main() {
   console.log("🚩 main()");
-  // await createDatabase();
+  await createDatabase();
   // await postProposal();
   // await getProposals();
   // await vote();
   // await getVotes();
   // await vote();
   // await getVotes();
+  // await postComment();
+  // await getComments();
   // await sandbox();
 }
 
