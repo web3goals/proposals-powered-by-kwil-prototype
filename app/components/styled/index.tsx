@@ -1,3 +1,4 @@
+import { palette } from "@/theme/palette";
 import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import {
   Box,
@@ -6,6 +7,7 @@ import {
   DialogContentProps,
   Divider,
   DividerProps,
+  LinearProgress,
   Select,
   SelectProps,
   Skeleton,
@@ -15,6 +17,7 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
+import { linearProgressClasses } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 
 export const ThickDivider = styled(Divider)<DividerProps>(({ theme }) => ({
@@ -163,3 +166,15 @@ export const DialogCenterContent = styled(DialogContent)<DialogContentProps>(
     margin: "14px 0px",
   })
 );
+
+export const VotesLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: palette.red,
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: palette.green,
+  },
+}));

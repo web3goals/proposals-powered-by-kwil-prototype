@@ -35,7 +35,7 @@ export default function PostProposal() {
     // description: "",
     // tokenAddress: "",
     description: "Let's build a teleport!",
-    tokenAddress: "0x60f028c82f9f3bf71e0c13fe9e8e7f916b345c00",
+    tokenAddress: "0x96be97face3fbb9a18489818c4114f58102dce55",
   });
   const formValidationSchema = yup.object({
     description: yup.string().required(),
