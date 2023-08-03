@@ -12,11 +12,12 @@ import NextNProgress from "nextjs-progressbar";
 import { SnackbarProvider } from "notistack";
 import { useEffect, useState } from "react";
 import { theme } from "theme";
-import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
+import { polygon } from "viem/chains";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [polygon],
   [publicProvider()]
 );
 

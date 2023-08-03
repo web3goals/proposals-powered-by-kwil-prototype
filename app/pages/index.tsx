@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 
 /**
- * Landing page.
+ * Landing page
  */
 export default function Landing() {
   const { address } = useAccount();
