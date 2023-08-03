@@ -1,6 +1,6 @@
 {
   "owner": "",
-  "name": "proposals_1",
+  "name": "proposals_7",
   "tables": [
     {
       "name": "proposals",
@@ -216,6 +216,15 @@
         "$is_proposer=proposals.isProposer($token_address,@caller);",
         "SELECT CASE WHEN $is_proposer = 'false' THEN ERROR('Caller can not post comments') END;",
         "INSERT INTO comments VALUES($id,$proposal_id,@caller,$create_time,$comment_text);"
+      ]
+    },
+    {
+      "name": "get_available_votes",
+      "public": true,
+      "inputs": ["$proposal_id", "$token_address"],
+      "statements": [
+        "$available_votes=proposals.getAvailableVotes($token_address,@caller,@dataset,$proposal_id);",
+        "SELECT $available_votes AS available_votes;"
       ]
     }
   ],
