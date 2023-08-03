@@ -22,7 +22,10 @@ export default function useKwil() {
   };
 
   let getProposals = async function () {
-    return await kwil.selectQuery(dbid, `SELECT * FROM proposals`);
+    return await kwil.selectQuery(
+      dbid,
+      `SELECT * FROM proposals ORDER BY create_time DESC`
+    );
   };
 
   let postProposal = async function (
@@ -40,7 +43,6 @@ export default function useKwil() {
       .put("$token_address", tokenAddress)
       .put("$create_time", createTime)
       .put("$description", description);
-    console.log("input", input);
     const tx = await kwil
       .actionBuilder()
       .dbid(dbid)
