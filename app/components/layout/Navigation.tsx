@@ -76,7 +76,7 @@ function Links(props: { sx?: SxProps }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", ...props.sx }}>
       {isConnected && (
-        <Link href={`/proposals/new`} passHref legacyBehavior>
+        <Link href={`/proposals/post`} passHref legacyBehavior>
           <Button
             variant="contained"
             sx={{ display: { xs: "none", md: "flex" } }}
@@ -172,7 +172,7 @@ function NavigationMenu(props: { sx?: SxProps }) {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {isConnected && (
-          <Link href={`/proposals/new`} passHref legacyBehavior>
+          <Link href={`/proposals/post`} passHref legacyBehavior>
             <MenuItem>
               <Button variant="contained">Post Proposal</Button>
             </MenuItem>

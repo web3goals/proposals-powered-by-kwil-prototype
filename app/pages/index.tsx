@@ -45,7 +45,7 @@ export default function Landing() {
           without smart contracts and transaction fees
         </Typography>
         {address ? (
-          <Link href={`/proposals/new`}>
+          <Link href={`/proposals/post`}>
             <ExtraLargeLoadingButton variant="contained" sx={{ mt: 4 }}>
               Let’s go!
             </ExtraLargeLoadingButton>
