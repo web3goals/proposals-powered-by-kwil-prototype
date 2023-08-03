@@ -14,18 +14,20 @@ export default function useKwil() {
     process.env.NEXT_PUBLIC_KWIL_DATABASE_NAME as string
   );
 
-  let getProposal = async function (id: string) {
-    return await kwil.selectQuery(
+  let getProposal = async function (id: string): Promise<any> {
+    const response = await kwil.selectQuery(
       dbid,
       `SELECT * FROM proposals WHERE id = '${id}'`
     );
+    return response?.data?.[0];
   };
 
-  let getProposals = async function () {
-    return await kwil.selectQuery(
+  let getProposals = async function (): Promise<any> {
+    const response = await kwil.selectQuery(
       dbid,
       `SELECT * FROM proposals ORDER BY create_time DESC`
     );
+    return response?.data;
   };
 
   let postProposal = async function (

@@ -105,7 +105,7 @@ export const WidgetTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   marginBottom: "8px",
   [theme.breakpoints.up("md")]: {
     fontSize: "2.125rem",
-    minWidth: "180px",
+    minWidth: "200px",
     marginRight: "24px",
     marginBottom: "0px",
   },

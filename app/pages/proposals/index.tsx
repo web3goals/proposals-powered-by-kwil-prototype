@@ -9,9 +9,7 @@ export default function Proposals() {
   const { getProposals } = useKwil();
 
   useEffect(() => {
-    getProposals().then((proposals) =>
-      console.log("proposals", proposals?.data)
-    );
+    getProposals().then((proposals) => console.log("proposals", proposals));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
