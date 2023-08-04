@@ -90,7 +90,12 @@ export default function VoteDialog(props: {
   }, [props.proposalId, props.proposalTokenAddress]);
 
   return (
-    <Dialog open={isOpen} onClose={close} maxWidth="sm" fullWidth>
+    <Dialog
+      open={isOpen}
+      onClose={!isFormSubmitting ? close : undefined}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogCenterContent>
         {availableVotes ? (
           <>

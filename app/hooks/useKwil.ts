@@ -132,6 +132,41 @@ export default function useKwil() {
     await kwil.broadcast(tx);
   };
 
+  let getComments = async function (proposalId: string) {
+    const response = await kwil.selectQuery(
+      dbid,
+      `SELECT * FROM comments WHERE proposal_id = '${proposalId}' ORDER BY create_time DESC`
+    );
+    return response?.data;
+  };
+
+  let postComment = async function (
+    proposalId: string,
+    commentText: string,
+    tokenAddress: string
+  ) {
+    const provider: BrowserProvider = new BrowserProvider(
+      (window as any).ethereum
+    );
+    const signer = await provider.getSigner();
+    const id = uuidv4();
+    const createTime = new Date().getTime();
+    const input = new Utils.ActionInput()
+      .put("$id", id)
+      .put("$proposal_id", proposalId)
+      .put("$create_time", createTime)
+      .put("$comment_text", commentText)
+      .put("$token_address", tokenAddress);
+    const tx = await kwil
+      .actionBuilder()
+      .dbid(dbid)
+      .name("post_comment")
+      .concat(input)
+      .signer(signer)
+      .buildTx();
+    await kwil.broadcast(tx);
+  };
+
   return {
     getProposal,
     getProposals,
@@ -140,5 +175,7 @@ export default function useKwil() {
     getAvailableVotes,
     voteFor,
     voteAgainst,
+    getComments,
+    postComment,
   };
 }

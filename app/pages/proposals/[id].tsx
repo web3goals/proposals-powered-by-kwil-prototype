@@ -1,6 +1,9 @@
+import CommentDialog from "@/components/dialog/CommentDialog";
 import VoteDialog from "@/components/dialog/VoteDialog";
+import EntityList from "@/components/entity/EntityList";
 import Layout from "@/components/layout";
 import {
+  CardBox,
   FullWidthSkeleton,
   LargeLoadingButton,
   ThickDivider,
@@ -13,8 +16,9 @@ import { DialogContext } from "@/context/dialog";
 import useError from "@/hooks/useError";
 import useKwil from "@/hooks/useKwil";
 import { palette } from "@/theme/palette";
+import { emojiAvatarForAddress } from "@/utils/avatars";
 import { addressToShortAddress } from "@/utils/converters";
-import { Box, Link as MuiLink, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Link as MuiLink, Stack, Typography } from "@mui/material";
 import { polygon } from "@wagmi/chains";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -57,7 +61,10 @@ export default function Proposal() {
             tokenAddress={proposal.token_address}
           />
           <ThickDivider sx={{ my: 6 }} />
-          <ProposalComments id={id as string} />
+          <ProposalComments
+            id={id as string}
+            tokenAddress={proposal.token_address}
+          />
         </>
       ) : (
         <FullWidthSkeleton />
@@ -145,7 +152,6 @@ function ProposalVotes(props: { id: string; tokenAddress: string }) {
     try {
       setVotes(undefined);
       const votes = await getVotes(props.id);
-      console.log("votes", votes);
       let votesFor = 0;
       let votesAgainst = 0;
       if (votes) {
@@ -216,6 +222,112 @@ function ProposalVotes(props: { id: string; tokenAddress: string }) {
   return <FullWidthSkeleton />;
 }
 
-function ProposalComments(props: { id: string }) {
+function ProposalComments(props: { id: string; tokenAddress: string }) {
+  const { showDialog, closeDialog } = useContext(DialogContext);
+  const { getComments } = useKwil();
+  const { handleError } = useError();
+  const [comments, setComments] = useState<any>();
+
+  /**
+   * Define comments
+   */
+  async function loadComments() {
+    try {
+      setComments(undefined);
+      const comments = await getComments(props.id);
+      setComments(comments);
+    } catch (error: any) {
+      handleError(error, true);
+    }
+  }
+
+  useEffect(() => {
+    loadComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.id]);
+
+  if (comments) {
+    return (
+      <>
+        <Typography variant="h4" textAlign="center" fontWeight={700}>
+          💬 Comments
+        </Typography>
+        <Typography textAlign="center" mt={1}>
+          posted by holders of community tokens
+        </Typography>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <LargeLoadingButton
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={() =>
+              showDialog?.(
+                <CommentDialog
+                  proposalId={props.id}
+                  proposalTokenAddress={props.tokenAddress}
+                  onComment={() => loadComments()}
+                  onClose={closeDialog}
+                />
+              )
+            }
+          >
+            Post
+          </LargeLoadingButton>
+        </Box>
+        <EntityList
+          entities={comments}
+          renderEntityCard={(comment, index) => (
+            <ProposalCommentCard comment={comment} key={index} />
+          )}
+          noEntitiesText="😐 no comments"
+          sx={{ mt: 4 }}
+        />
+      </>
+    );
+  }
+
+  function ProposalCommentCard(props: { comment: any }) {
+    console.log("props.comment", props.comment);
+
+    return (
+      <CardBox sx={{ display: "flex", flexDirection: "row" }}>
+        {/* Left part */}
+        <Box>
+          <Avatar
+            sx={{
+              width: 48,
+              height: 48,
+              borderRadius: 48,
+              background: emojiAvatarForAddress(props.comment.commentator)
+                .color,
+            }}
+          >
+            <Typography fontSize={22}>
+              {emojiAvatarForAddress(props.comment.commentator).emoji}
+            </Typography>
+          </Avatar>
+        </Box>
+        {/* Right part */}
+        <Box width={1} ml={1.5} display="flex" flexDirection="column">
+          <MuiLink
+            fontWeight={700}
+            variant="body2"
+            href={
+              polygon.blockExplorers.default.url +
+              "/address/" +
+              props.comment.commentator
+            }
+            target="_blank"
+          >
+            {addressToShortAddress(props.comment.commentator)}
+          </MuiLink>
+          <Typography variant="body2" color="text.secondary">
+            {new Date(props.comment.create_time).toLocaleString()}
+            <Typography mt={1}>{props.comment.comment_text}</Typography>
+          </Typography>
+        </Box>
+      </CardBox>
+    );
+  }
+
   return <FullWidthSkeleton />;
 }
