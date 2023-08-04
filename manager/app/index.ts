@@ -8,7 +8,7 @@ import proposalsSchema from "./schemes/proposals.json";
 dotenv.config();
 
 const kwil = new NodeKwil({
-  kwilProvider: "http://localhost:8080",
+  kwilProvider: process.env.KWIL_PROVIDER as string,
   timeout: 1000,
   logging: false,
 });
@@ -30,6 +30,9 @@ async function createDatabase() {
   const res = await kwil.broadcast(dbTx);
   console.log("res", res);
 }
+
+// TODO:
+async function dropDatabase() {}
 
 async function postProposal() {
   console.log("🚩 postProposal()");
