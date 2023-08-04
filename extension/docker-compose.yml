@@ -4,6 +4,8 @@ services:
     image: kwil-extension:latest
     ports:
       - 50055:50051
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: on-failure
 
   kwil:
@@ -11,6 +13,8 @@ services:
     ports:
       - 50051:50051
       - 8080:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - ./config/kwil.env
     environment:
