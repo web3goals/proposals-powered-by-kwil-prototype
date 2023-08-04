@@ -31,7 +31,7 @@ async function createDatabase() {
   console.log("res", res);
 }
 
-// TODO:
+// TODO: Implement if required
 async function dropDatabase() {}
 
 async function postProposal() {

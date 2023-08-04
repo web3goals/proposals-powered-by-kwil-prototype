@@ -31,8 +31,8 @@ export default function PostProposal() {
    * Form states
    */
   const [formValues, setFormValues] = useState({
-    description: "Let's build a teleport!", // TODO: Clear value
-    tokenAddress: "0x96be97face3fbb9a18489818c4114f58102dce55", // TODO: Clear value
+    description: "",
+    tokenAddress: "",
   });
   const formValidationSchema = yup.object({
     description: yup.string().required(),
