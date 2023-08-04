@@ -25,7 +25,7 @@ export default function Landing() {
           py: 6,
         }}
       >
-        <Box width={{ xs: "100%", md: "60%", lg: "50%" }}>
+        <Box width={{ xs: "100%", md: "60%", lg: "40%" }}>
           <Image
             src="/images/ideas.png"
             alt="Ideas"

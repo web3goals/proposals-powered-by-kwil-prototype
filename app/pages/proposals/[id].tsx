@@ -85,7 +85,12 @@ function ProposalParams(props: {
       <Typography variant="h4" textAlign="center" fontWeight={700}>
         💡 Proposal
       </Typography>
-      <Typography textAlign="center" mt={1}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        textAlign="center"
+        mt={1}
+      >
         {props.id}
       </Typography>
       <WidgetBox bgcolor={palette.blue} mt={2}>
