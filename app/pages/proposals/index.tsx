@@ -79,10 +79,9 @@ function ProposalCard(props: { proposal: any }) {
         </MuiLink>
         <Typography variant="body2" color="text.secondary">
           {new Date(props.proposal.create_time).toLocaleString()}
-          <Typography mt={1}>{props.proposal.comment_text}</Typography>
         </Typography>
         <Link href={`/proposals/${props.proposal.id}`} passHref legacyBehavior>
-          <MuiLink variant="h6" fontWeight={700}>
+          <MuiLink variant="h6" fontWeight={700} mt={1}>
             {props.proposal.description}
           </MuiLink>
         </Link>
