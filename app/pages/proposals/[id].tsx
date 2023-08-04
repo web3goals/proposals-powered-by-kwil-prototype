@@ -257,7 +257,7 @@ function ProposalComments(props: { id: string; tokenAddress: string }) {
         </Typography>
         <Box display="flex" flexDirection="column" alignItems="center">
           <LargeLoadingButton
-            variant="contained"
+            variant="outlined"
             sx={{ mt: 2 }}
             onClick={() =>
               showDialog?.(
@@ -286,8 +286,6 @@ function ProposalComments(props: { id: string; tokenAddress: string }) {
   }
 
   function ProposalCommentCard(props: { comment: any }) {
-    console.log("props.comment", props.comment);
-
     return (
       <CardBox sx={{ display: "flex", flexDirection: "row" }}>
         {/* Left part */}
