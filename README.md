@@ -5,7 +5,7 @@ Boost your community with proposals without smart contracts and transaction fees
 ## 🔗 Links
 
 - Application - https://proposals-powered-by-kwil.vercel.app/
-- Kwil Database - https://first-ewe-caring.ngrok-free.app
+- Kwil Database - https://first-ewe-caring.ngrok-free.app/
 - Kwil Extension Source Code - https://github.com/web3goals/proposals-powered-by-kwil-prototype/tree/main/extension
 
 ## ✨ About
